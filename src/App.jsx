@@ -64,14 +64,20 @@ function App() {
     try {
       setStatus(STATUS.UPLOADING);
 
-      const formData = new FormData();
-      formData.append("audio", file);
-      formData.append("style", style);
-      formData.append("vibe", vibe);
+      // TEMP: use a placeholder audio URL until we wire real uploads.
+      const audioUrl =
+        "https://sample-videos.com/audio/mp3/wave.mp3";
 
       const res = await fetch("/.netlify/functions/create-job", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          audioUrl,
+          style,
+          vibe,
+        }),
       });
 
       if (!res.ok) {
@@ -165,7 +171,7 @@ function App() {
           )}
 
           <button className="button" type="submit" disabled={isBusy}>
-            {isBusy ? "Working…" : "Generate mock video"}
+            {isBusy ? "Working…" : "Generate video"}
           </button>
         </form>
 
@@ -176,8 +182,7 @@ function App() {
         )}
 
         <p className="small" style={{ marginTop: 12 }}>
-          This is an MVP demo using a mocked generator. In production, this
-          will call a real AI video API.
+          This is an MVP demo. The backend calls an AI video API to generate your video.
         </p>
       </div>
     </div>
